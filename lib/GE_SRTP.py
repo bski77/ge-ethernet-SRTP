@@ -32,7 +32,7 @@ class GeSrtpResponse:
             self.status_code         = struct.unpack('B', bytes([msg[42]]))[0]
             self.status_code_minor   = struct.unpack('B', bytes([msg[43]]))[0]
             self.register_result     = struct.unpack('H', bytearray(msg[44:46]))[0] # TODO Danger, 16 bit word only!
-            if not self.quiet: 
+            if not self.quiet:
                 print("PLC Status Codes (42,43): 0x{:02x} 0x{:02x}".format(self.status_code, self.status_code_minor))
                 print("Data From Reg (hex): {:02x}".format(self.register_result))
 
@@ -43,7 +43,7 @@ class GeSrtpResponse:
 
 
 ###########################################################
-# Primary class for communication etc. This class will 
+# Primary class for communication etc. This class will
 # return a instance of GeSrtpResponse to get results
 # from functions like readSysMemory(...)
 ###########################################################
@@ -118,7 +118,7 @@ class GeSrtp:
     # Returns: Bytearray for sending via socket.
     ###########################################################
     def readSysMemory(self, reg):
-        if not re.search('%*(R|AI|AQ|I|Q)\d+',reg):
+        if not re.search('%*(R|AI|AQ|I|Q|T|M|SA|SB|SC|G)\d+',reg):
             raise Exception("Invalid Register Address! (" + reg + ").")
 
         try:
@@ -126,7 +126,7 @@ class GeSrtp:
             tmp = GE_SRTP_Messages.BASE_MSG.copy()
             tmp[42] = GE_SRTP_Messages.SERVICE_REQUEST_CODE["READ_SYS_MEMORY"]
             # Update for type of register
-            tmp[43] = GE_SRTP_Messages.MEMORY_TYPE_CODE[re.search('(R|AI|AQ|I|Q)',reg)[0]]
+            tmp[43] = GE_SRTP_Messages.MEMORY_TYPE_CODE[re.search('(R|AI|AQ|I|Q|T|M|SA|SB|SC|G)',reg)[0]]
             # 0 based register to read
             address = int(re.search('\d+',reg)[0]) - 1
             tmp[44] = int(address & 255).to_bytes(1,byteorder='big')        # Get LSB of Word
@@ -194,7 +194,7 @@ class GeSrtp:
             print("\nException:" + str(err))
             self.plc_sock.close()
 
-        raise Exception("Exception during send/receive of PLC socket. Socket closed, raising...") 
+        raise Exception("Exception during send/receive of PLC socket. Socket closed, raising...")
 
 
 
@@ -235,5 +235,5 @@ class GeSrtp:
         for idx,x in enumerate(msg):
             if iter_len - idx <= end:
                 hex_resp_end += " {:02x}".format(x)
-            
+
         print("{}{}...{} (Only Displaying {} of {} bytes)".format(pre_msg, hex_resp_start, hex_resp_end, start + end, len(msg)))

@@ -1,5 +1,5 @@
 ###########################################################
-# GE SRTP PLC Lib - 
+# GE SRTP PLC Lib -
 # This file contains default messages and enumerations.
 # The contained variables are referenced by GE_SRTP.py
 #
@@ -98,5 +98,10 @@ MEMORY_TYPE_CODE = {
     "AQ" :   b'\x0c',    # Analog Output (Word)
     "I"  :   b'\x10',    # Descrete Input (Byte)
     "Q"  :   b'\x12',    # Descrete Output (Byte)
+    "T"  :   b'0x14',    # Descrete Temporary Bits (Byte)
+    "M"  :   b'0x16',    # Descrete Markers (Byte)
+    "SA" :   b'0x18',    # System Bits A-part (Byte)
+    "SB" :   b'0x20',    # System Bits B-part (Byte)
+    "SC" :   b'0x22',    # System Bits C-part (Byte)
+    "G"  :   b'0x38',    # Genius Global (Byte)
 }
-
